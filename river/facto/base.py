@@ -24,7 +24,9 @@ class BaseFM:
         l2_latent,
         intercept,
         intercept_lr,
+        weights,
         weight_initializer,
+        latents,
         latent_initializer,
         clip_gradient,
         seed,
@@ -46,15 +48,21 @@ class BaseFM:
             else intercept_lr
         )
 
-        if weight_initializer is None:
-            weight_initializer = optim.initializers.Zeros()
-        self.weight_initializer = weight_initializer
-        self.weights = collections.defaultdict(weight_initializer)
+        if weights is None:
+            if weight_initializer is None:
+                weight_initializer = optim.initializers.Zeros()
+            self.weight_initializer = weight_initializer
+            self.weights = collections.defaultdict(weight_initializer)
+        else:
+            self.weights = weights
 
-        if latent_initializer is None:
-            latent_initializer = optim.initializers.Normal(sigma=0.1, seed=seed)
-        self.latent_initializer = latent_initializer
-        self.latents = self._init_latents()
+        if latents is None:
+            if latent_initializer is None:
+                latent_initializer = optim.initializers.Normal(sigma=0.1, seed=seed)
+            self.latent_initializer = latent_initializer
+            self.latents = self._init_latents()
+        else:
+            self.latents = latents
 
         self.clip_gradient = clip_gradient
         self.seed = seed
